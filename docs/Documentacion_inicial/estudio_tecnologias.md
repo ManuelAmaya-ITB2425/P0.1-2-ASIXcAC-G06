@@ -4,9 +4,9 @@
 
 ## 🧩 Contexto del proyecto
 
-El proyecto se basará en el despliegue de una aplicación web directamente sobre la infraestructura de **Amazon Web Services (AWS)**, utilizando un entorno servidor Linux. Todo el desarrollo y la configuración se realizarán desde el inicio en AWS, evitando migraciones posteriores y trabajando desde el primer momento con un entorno real de producción.
+El proyecto se basará en el despliegue de una aplicación web directamente sobre la infraestructura de **Amazon Web Services (AWS)**, utilizando un entorno servidor Linux. Todo el desarrollo y la configuración la realizaremos desde el inicio en AWS, evitando migraciones posteriores y trabajando desde el primer momento con un entorno real de producción.
 
-La selección de tecnologías se realiza teniendo en cuenta cuatro criterios principales:
+La selección de tecnologías la haremos teniendo en cuenta cuatro criterios principales:
 
 - **El rendimiento** asegurándonos de que todo lo que vayamos a configurar y lanzar funcione de manera eficaz, sin problemas de compatibilidad, ajustes o versiones. Buscamos que el software se gestione correctamente y funcione con un consumo eficiente de recursos.
 - **Mantenimiento**, priorizando que todo lo configurado pueda editarse, actualizarse y mantenerse de forma sencilla, con configuraciones claras y sin dependencias innecesariamente complejas.
@@ -17,11 +17,11 @@ La selección de tecnologías se realiza teniendo en cuenta cuatro criterios pri
 
 ## 🌐 Servidor web: NGINX vs Apache
 
-Apache y NGINX han sido y siguen siendo los dos servidores web más utilizados. Ambos presentan ventajas y desventajas. Apache es muy flexible, ampliamente documentado y sencillo de configurar, lo que facilita el mantenimiento. Sin embargo, su modelo basado en procesos consume más recursos y puede presentar problemas de rendimiento cuando hay muchas conexiones simultáneas.
+Apache y NGINX han sido y siguen siendo los dos servidores web más utilizados. Ambos tienen pros y contras. Apache es muy flexible, muy documentado y sencillo de configurar, lo que facilita el mantenimiento. Sin embargo, su modelo basado en procesos consume más recursos y puede presentar problemas de rendimiento cuando hay muchas conexiones simultáneas.
 
-Por otro lado, NGINX utiliza un modelo asíncrono, en el que un proceso no se queda bloqueado esperando a que una tarea finalice para atender otra. Esto permite gestionar un gran número de conexiones simultáneas con un menor consumo de CPU y memoria, lo que resulta especialmente adecuado para entornos cloud como AWS.
+Por otro lado, NGINX utiliza un modelo asíncrono, en el que un proceso no se queda bloqueado esperando a que una tarea finalice para hacer otra. Esto permite gestionar un gran número de conexiones simultáneas con un menor consumo de CPU y memoria, lo cual es perfecto para un entorno AWS.
 
-Por este motivo, en este proyecto se opta por **NGINX**, ya que ofrece mejor rendimiento, mayor eficiencia y una integración más natural con arquitecturas en AWS.
+Por lo cual en el proyecto usaremos **NGINX**, ya que ofrece mejor rendimiento, mayor eficiencia y una integración más natural con arquitecturas en AWS.
 
 ---
 
@@ -41,31 +41,26 @@ Cuando una petición requiere ejecutar código PHP, NGINX la redirige a PHP-FPM.
 
 ## 🗄️ Sistema gestor de bases de datos: MySQL
 
-MySQL es un sistema gestor de bases de datos relacional ampliamente utilizado en aplicaciones web. Es estable, eficiente y totalmente compatible con Linux y con servicios desplegados en AWS.
-
-Para el alcance del proyecto no se requiere una base de datos más compleja, por lo que MySQL resulta una opción adecuada, realista y alineada con entornos profesionales.
-
-✅ **Decisión:** Se utiliza **MySQL** como sistema gestor de bases de datos relacional.
+MySQL es un sistema gestor de bases de datos que se utiliza ampliamente en el entorno profesional y en aplicaciones web. Es estable, eficiente y compatible con Linux y con servicios desplegados en AWS.
+Para el proyecto no necesitaremos una base de datos compleja, por lo que MySQL es la mejor opción.
 
 ---
 
 ## 📦 Contenerización: Docker
 
-Docker permite encapsular servicios y dependencias en contenedores, facilitando la consistencia del entorno y la portabilidad dentro de AWS. Su uso permite aplicar buenas prácticas de despliegue y simplifica la escalabilidad y el mantenimiento de la infraestructura.
+Docker nos va a permitir encapsular servicios y dependencias en contenedores, facilitando la consistencia del entorno y la portabilidad dentro de AWS, es decir, que la aplicación siempre se ejecutará con las mismas versiones y configuraciones, evitando errores por diferencias entre servidores, y que esos mismos servicios se pueden mover, replicar o escalar en instancias diferentes sin tener que reinstalar ni reconfigurar nada.
 
-Aunque no es imprescindible en la fase inicial, su adopción aporta valor profesional y coherencia arquitectónica en entornos cloud.
+Docker también facilita el mantenimiento y la escalabilidad. Cada servicio (NGINX, PHP-FPM, MySQL) puede ejecutarse en su propio contenedor, lo que permite actualizar, reiniciar o modificar un componente sin afectar al resto del sistema. Esto encaja perfectamente con arquitecturas Cloud, donde es habitual separar servicios y escalar solo aquellos que lo necesitan.
 
-✅ **Decisión:** Docker se considera una tecnología complementaria y recomendable.
+Todo esto no es esencial para el proyecto, pero su uso aporta una mejora en la organización de la arquitectura y prepara el entorno para una infraestructura moderna y escalable en AWS. Con lo cual, vamos a usar Docker.
 
 ---
 
 ## 🧱 Stack tecnológico final
 
-El stack tecnológico seleccionado para el proyecto es:
+Las tecnologías elegidas permiten que la aplicación funcione de forma rápida, segura y ordenada. Cada parte se encarga de una función concreta: mostrar la web, ejecutar la aplicación y guardar los datos. Además, todo está preparado para crecer y funcionar correctamente dentro de AWS.:
 
 - 🌐 **NGINX** como servidor web  
 - ⚙️ **PHP-FPM** para la ejecución de PHP  
 - 🗄️ **MySQL** como sistema gestor de bases de datos  
 - 📦 **Docker** como herramienta de contenerización (opcional)
-
-Este conjunto de tecnologías es coherente, eficiente y totalmente alineado con entornos profesionales y con la infraestructura de AWS.
