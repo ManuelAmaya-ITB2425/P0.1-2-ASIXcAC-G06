@@ -4,66 +4,68 @@
 
 ## 🧩 Contexto del proyecto
 
-El proyecto se basara en el despliegue de una applicación web, esto lo haremos en un entorno servidor Linux. Al principio trabajaremos con una maquina virtual, para evitar costes a la hora de lanzar instancias en AWS, para luego una vez tener la base y todo configurado migrarlo a AWS.
+El proyecto se basará en el despliegue de una aplicación web directamente sobre la infraestructura de **Amazon Web Services (AWS)**, utilizando un entorno servidor Linux. Todo el desarrollo y la configuración se realizarán desde el inicio en AWS, evitando migraciones posteriores y trabajando desde el primer momento con un entorno real de producción.
 
-La selección de tecnologias la haremos teniendo encuenta cuatro cosas:
+La selección de tecnologías se realiza teniendo en cuenta cuatro criterios principales:
 
-- **El rendimiento** asegurándonos de que todo lo que vayamos a configurar y lanzar funcione de manera eficaz sin ningún tipo de problema, ya sea de compatibilidad, ajustes o versiones. Que el software se gestione bien y cargue sin usar muchos recursos ni peticiones.
-- **Mantenimiento**, queremos que todo lo que se configure se pueda editar, actualizar o mantener de una manera fácil y sencilla, sin necesidad de tener que acceder a mil directorios y sin dependencias complejas.
-- **Uso real en entornos profesionales**, queremos que lo que configuremos nos sirva para más tarde, a la hora de trabajar, para poder tener una base sólida de algo real, tecnologías que se usen en empresas reales y con soporte.
-- **Infraestructuras Cloud**. Finalmente queremos que haya compatibilidad, que todo lo que configuramos funcione igual en una Máquina Virtual Local que en AWS, permitiendo pasar datos y configuración sin tener que rehacer arquitectura ni configuraciones.
+- **El rendimiento** asegurándonos de que todo lo que vayamos a configurar y lanzar funcione de manera eficaz, sin problemas de compatibilidad, ajustes o versiones. Buscamos que el software se gestione correctamente y funcione con un consumo eficiente de recursos.
+- **Mantenimiento**, priorizando que todo lo configurado pueda editarse, actualizarse y mantenerse de forma sencilla, con configuraciones claras y sin dependencias innecesariamente complejas.
+- **Uso real en entornos profesionales**, utilizando tecnologías ampliamente adoptadas en empresas reales, con soporte, documentación y aplicación directa en el mundo laboral.
+- **Infraestructuras Cloud**, asegurando que todas las tecnologías estén pensadas para funcionar correctamente en AWS, permitiendo escalar, modificar o replicar la arquitectura sin rehacer configuraciones ni estructura.
 
 ---
 
 ## 🌐 Servidor web: NGINX vs Apache
-Apache y NGINX han sido y son los dos servidores web más utilizados de todos, ambos tienen sus pros y contras. Apache es más flexible, muy documentado y fácil de configurar, lo cual es bueno ya que buscamos buen rendimiento y mantenimiento fácil, pero su modelo está basado en procesos, los cuales consumen muchos más recursos y, cuando hay muchas conexiones simultáneas, puede fallar.
-Por otro lado, NGINX usa un modelo asíncrono, que es una forma de trabajar en la que un proceso no se queda bloqueado esperando a que una tarea termine para poder atender otra, lo que permite gestionar un gran número de conexiones con menor consumo de CPU y memoria, lo cual es bueno tanto para el mantenimiento, como para el rendimiento y la infraestructura Cloud.
 
-Entonces, en este proyecto, nos vamos a decantar por NGINX, ya que tiene mejor rendimiento, eficiencia y alineación con AWS.
+Apache y NGINX han sido y siguen siendo los dos servidores web más utilizados. Ambos presentan ventajas y desventajas. Apache es muy flexible, ampliamente documentado y sencillo de configurar, lo que facilita el mantenimiento. Sin embargo, su modelo basado en procesos consume más recursos y puede presentar problemas de rendimiento cuando hay muchas conexiones simultáneas.
+
+Por otro lado, NGINX utiliza un modelo asíncrono, en el que un proceso no se queda bloqueado esperando a que una tarea finalice para atender otra. Esto permite gestionar un gran número de conexiones simultáneas con un menor consumo de CPU y memoria, lo que resulta especialmente adecuado para entornos cloud como AWS.
+
+Por este motivo, en este proyecto se opta por **NGINX**, ya que ofrece mejor rendimiento, mayor eficiencia y una integración más natural con arquitecturas en AWS.
 
 ---
 
 ## ⚙️ Ejecución de PHP: PHP-FPM
 
-PHP-FPM gestiona un conjunto de procesos PHP persistentes que se reutilizan, evitando crear un proceso nuevo por cada petición. Esto mejora el rendimiento y la estabilidad del sistema. Además, permite definir límites de memoria, número de procesos y usuarios, lo que ayuda a controlar el consumo de recursos y refuerza la seguridad al aislar la ejecución del código de la capa web.
+PHP-FPM gestiona un conjunto de procesos PHP persistentes que se reutilizan, evitando crear un proceso nuevo por cada petición. Esto mejora notablemente el rendimiento y la estabilidad del sistema. Además, permite definir límites de memoria, número de procesos y usuarios, ayudando a controlar el consumo de recursos y reforzando la seguridad.
 
-PHP-FPM nos va a permitir ejecutar PHP como un servicio independiente al servidor web (NGINX), lo cual mejora el rendimiento, mantenimiento y especialmente, la seguridad. Al separa el servidor web del servicio PHP, se pueden configurar permisos y responsabilidades diferentes para cada servicio, con esto reducimos la superficie y margen de ataque, tambien evitando que un fallo en la aplicacion afecte al servidor web.
+PHP-FPM permite ejecutar PHP como un servicio independiente del servidor web (NGINX). Esta separación mejora el mantenimiento y, sobre todo, la seguridad, ya que se pueden definir permisos y responsabilidades distintas para cada servicio. De este modo se reduce la superficie de ataque y se evita que un fallo en la aplicación PHP comprometa directamente al servidor web.
 
-En entornos donde se usa NGINX esto es lo mas recomendado, ya que facilita la estabilidad y permite adaptar la arquitectura sin hacer cambios. Separar servicios es algo que se hace bastante en infraestructuras profesionales y Cloud.
+En entornos donde se utiliza NGINX, este enfoque es el más recomendado, ya que aporta estabilidad y facilita la escalabilidad y adaptación de la arquitectura en AWS. La separación de servicios es una práctica habitual en infraestructuras profesionales y cloud.
 
-El funcionamiento es facil, NGINX no ejecutara PHP directamente, su funcion sera solamente recibir peticiones HTTP y servir contenido estatico, es decir, entregar los archivos tal y como estan almacenados en el servidor, sin ejecutar ningun tipo de codigo. Cuando un usuario solicite una imagen, archivo CSS, JavaScript o una pagina HTML, NGINX simplemente leera el archivo del disco y lo enviara al navegador.
+El funcionamiento es sencillo. NGINX no ejecuta PHP directamente. Su función es recibir peticiones HTTP y servir contenido estático, es decir, entregar archivos tal y como están almacenados en el servidor, sin ejecutar ningún tipo de código. Cuando un usuario solicita una imagen, un archivo CSS, JavaScript o una página HTML, NGINX simplemente lee el archivo del disco y lo envía al navegador.
 
-Cuando alguna peticion requiera ejecutar codigo PHP, NGINX la redirigira a PHP-FPM, esta procesara el script, ejecutara la logica necesaria y devolvera el resultado al servidor web, que finalmente lo entregara al cliente.
-
-PHP-FPM gestiona un conjunto de procesos PHP que se reutilizan, evitando crear un proceso nuevo por cada peticion. Esto mejora el rendimiento y la estabilidad del sistema. Ademas, esto va a per
+Cuando una petición requiere ejecutar código PHP, NGINX la redirige a PHP-FPM. Este procesa el script, ejecuta la lógica necesaria y devuelve el resultado al servidor web, que finalmente lo entrega al cliente.
 
 ---
 
 ## 🗄️ Sistema gestor de bases de datos: MySQL
-MySQL es un sistema gestor de bases de datos relacional muy extendido en aplicaciones web. Es estable, eficiente y totalmente compatible con Linux, Docker y servicios gestionados en AWS.
 
-Para el alcance del proyecto no se requiere una base de datos más compleja, por lo que MySQL resulta una opción adecuada y realista.
+MySQL es un sistema gestor de bases de datos relacional ampliamente utilizado en aplicaciones web. Es estable, eficiente y totalmente compatible con Linux y con servicios desplegados en AWS.
 
-✅ **Decisión:** Se utiliza **MySQL** como base de datos relacional.
+Para el alcance del proyecto no se requiere una base de datos más compleja, por lo que MySQL resulta una opción adecuada, realista y alineada con entornos profesionales.
+
+✅ **Decisión:** Se utiliza **MySQL** como sistema gestor de bases de datos relacional.
 
 ---
 
 ## 📦 Contenerización: Docker
-Docker permite encapsular servicios y dependencias en contenedores, facilitando la portabilidad del entorno y la coherencia entre desarrollo y producción.
 
-Aunque no es imprescindible en la fase inicial, su uso aporta buenas prácticas profesionales y simplifica la futura migración a AWS.
+Docker permite encapsular servicios y dependencias en contenedores, facilitando la consistencia del entorno y la portabilidad dentro de AWS. Su uso permite aplicar buenas prácticas de despliegue y simplifica la escalabilidad y el mantenimiento de la infraestructura.
+
+Aunque no es imprescindible en la fase inicial, su adopción aporta valor profesional y coherencia arquitectónica en entornos cloud.
 
 ✅ **Decisión:** Docker se considera una tecnología complementaria y recomendable.
 
 ---
 
 ## 🧱 Stack tecnológico final
+
 El stack tecnológico seleccionado para el proyecto es:
 
-- 🌐 **NGINX** como servidor web
-- ⚙️ **PHP-FPM** para la ejecución de PHP
-- 🗄️ **MySQL** como sistema gestor de bases de datos
+- 🌐 **NGINX** como servidor web  
+- ⚙️ **PHP-FPM** para la ejecución de PHP  
+- 🗄️ **MySQL** como sistema gestor de bases de datos  
 - 📦 **Docker** como herramienta de contenerización (opcional)
 
-Este conjunto de tecnologías es coherente, eficiente y alineado con entornos profesionales y cloud.
-**
+Este conjunto de tecnologías es coherente, eficiente y totalmente alineado con entornos profesionales y con la infraestructura de AWS.
