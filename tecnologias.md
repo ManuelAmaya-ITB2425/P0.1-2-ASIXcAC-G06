@@ -24,11 +24,18 @@ Entonces, en este proyecto, nos vamos a decantar por NGINX, ya que tiene mejor r
 ---
 
 ## ⚙️ Ejecución de PHP: PHP-FPM
-PHP-FPM permite ejecutar PHP como un servicio independiente del servidor web. Esto mejora el rendimiento, facilita la configuración y aumenta la seguridad al separar responsabilidades.
 
-Es la solución recomendada cuando se utiliza NGINX y permite escalar el servicio de forma más sencilla en el futuro.
+PHP-FPM gestiona un conjunto de procesos PHP persistentes que se reutilizan, evitando crear un proceso nuevo por cada petición. Esto mejora el rendimiento y la estabilidad del sistema. Además, permite definir límites de memoria, número de procesos y usuarios, lo que ayuda a controlar el consumo de recursos y refuerza la seguridad al aislar la ejecución del código de la capa web.
 
-✅ **Decisión:** Se utiliza **PHP-FPM** como gestor de procesos PHP.
+PHP-FPM nos va a permitir ejecutar PHP como un servicio independiente al servidor web (NGINX), lo cual mejora el rendimiento, mantenimiento y especialmente, la seguridad. Al separa el servidor web del servicio PHP, se pueden configurar permisos y responsabilidades diferentes para cada servicio, con esto reducimos la superficie y margen de ataque, tambien evitando que un fallo en la aplicacion afecte al servidor web.
+
+En entornos donde se usa NGINX esto es lo mas recomendado, ya que facilita la estabilidad y permite adaptar la arquitectura sin hacer cambios. Separar servicios es algo que se hace bastante en infraestructuras profesionales y Cloud.
+
+El funcionamiento es facil, NGINX no ejecutara PHP directamente, su funcion sera solamente recibir peticiones HTTP y servir contenido estatico, es decir, entregar los archivos tal y como estan almacenados en el servidor, sin ejecutar ningun tipo de codigo. Cuando un usuario solicite una imagen, archivo CSS, JavaScript o una pagina HTML, NGINX simplemente leera el archivo del disco y lo enviara al navegador.
+
+Cuando alguna peticion requiera ejecutar codigo PHP, NGINX la redirigira a PHP-FPM, esta procesara el script, ejecutara la logica necesaria y devolvera el resultado al servidor web, que finalmente lo entregara al cliente.
+
+PHP-FPM gestiona un conjunto de procesos PHP que se reutilizan, evitando crear un proceso nuevo por cada peticion. Esto mejora el rendimiento y la estabilidad del sistema. Ademas, esto va a per
 
 ---
 
