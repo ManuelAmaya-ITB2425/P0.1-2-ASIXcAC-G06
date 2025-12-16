@@ -13,15 +13,13 @@ La selección de tecnologias la haremos teniendo encuenta cuatro cosas:
 - **Uso real en entornos profesionales**, queremos que lo que configuremos nos sirva para más tarde, a la hora de trabajar, para poder tener una base sólida de algo real, tecnologías que se usen en empresas reales y con soporte.
 - **Infraestructuras Cloud**. Finalmente queremos que haya compatibilidad, que todo lo que configuramos funcione igual en una Máquina Virtual Local que en AWS, permitiendo pasar datos y configuración sin tener que rehacer arquitectura ni configuraciones.
 
-  
 ---
 
 ## 🌐 Servidor web: NGINX vs Apache
-Apache ha sido durante años el servidor web más utilizado. Es flexible, muy documentado y fácil de configurar, pero su modelo basado en procesos consume más recursos y escala peor cuando hay muchas conexiones simultáneas.
+Apache y NGINX han sido y son los dos servidores web más utilizados de todos, ambos tienen sus pros y contras. Apache es más flexible, muy documentado y fácil de configurar, lo cual es bueno ya que buscamos buen rendimiento y mantenimiento fácil, pero su modelo está basado en procesos, los cuales consumen muchos más recursos y, cuando hay muchas conexiones simultáneas, puede fallar.
+Por otro lado, NGINX usa un modelo asíncrono, que es una forma de trabajar en la que un proceso no se queda bloqueado esperando a que una tarea termine para poder atender otra, lo que permite gestionar un gran número de conexiones con menor consumo de CPU y memoria, lo cual es bueno tanto para el mantenimiento, como para el rendimiento y la infraestructura Cloud.
 
-NGINX utiliza un modelo asíncrono orientado a eventos, lo que le permite gestionar un gran número de conexiones con menor consumo de CPU y memoria. Es el estándar de facto en entornos cloud y arquitecturas modernas.
-
-✅ **Decisión:** Se elige **NGINX** por rendimiento, eficiencia y alineación con AWS.
+Entonces, en este proyecto, nos vamos a decantar por NGINX, ya que tiene mejor rendimiento, eficiencia y alineación con AWS.
 
 ---
 
