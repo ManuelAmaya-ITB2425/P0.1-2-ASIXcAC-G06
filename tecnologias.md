@@ -1,4 +1,4 @@
-**# 🚀 Estudio de tecnologías disponibles
+## 🚀 Estudio de tecnologías disponibles
 
 ---
 
